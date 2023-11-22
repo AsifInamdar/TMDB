@@ -1,6 +1,5 @@
 package com.asif.tmdb.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,31 +16,43 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.asif.tmdb.R
+import com.asif.tmdb.data.MovieListDetail
+import com.asif.tmdb.viewmodels.MainViewModel
+
+const val BACKDROP_BASE_URL = "https://www.themoviedb.org/t/p/w780"
 
 @Composable
-fun NowPlayingItem() {
+fun NowPlayingItem(movie: MovieListDetail) {
+
     Box(
         modifier = Modifier
             .width(320.dp)
             .padding(end = 10.dp)
     ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.loki2),
-            contentDescription = null,
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(BACKDROP_BASE_URL + movie.backdropPath)
+                .build(),
+            contentDescription = "backdrop image",
+            placeholder = debugPlaceholder(R.drawable.loki),
+            error = painterResource(id = R.drawable.loki2),
             modifier = Modifier
                 .height(198.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp)),
-            contentScale = ContentScale.Crop,
-            alpha = 0.9f
+            contentScale = ContentScale.Crop
         )
 
         Row(
@@ -50,12 +61,16 @@ fun NowPlayingItem() {
                 .padding(5.dp)
                 .align(Alignment.BottomStart)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.loki3),
-                contentDescription = null,
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(IMAGE_BASE_URL + movie.posterPath)
+                    .build(),
+                placeholder = painterResource(id = R.drawable.loki3),
+                error = painterResource(id = R.drawable.loki2),
+                contentDescription = "poster image",
                 modifier = Modifier
-                    .height(110.dp)
-                    .width(80.dp)
+                    .height(90.dp)
+                    .width(72.dp)
                     .shadow(
                         elevation = 15.dp,
                         spotColor = Color.Black,
@@ -74,16 +89,17 @@ fun NowPlayingItem() {
             ) {
 
                 Text(
-                    text = "Loki - Season 2",
+                    text = movie.originalTitle,
                     modifier = Modifier
                         .fillMaxWidth(),
                     color = Color.White,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2
                 )
 
                 Text(
-                    text = "The story of Tim Bellard, a former US government agent, who quites his job in order to devote his life to rescuing child from global traffickers",
+                    text = movie.overview,
                     modifier = Modifier
                         .fillMaxWidth(),
                     color = Color.White,
@@ -99,5 +115,6 @@ fun NowPlayingItem() {
 @Preview
 @Composable
 fun NowPlayingItemPreview() {
-    NowPlayingItem()
+    val viewModel: MainViewModel = hiltViewModel()
+    NowPlayingItem(viewModel.getStaticMovieObject())
 }

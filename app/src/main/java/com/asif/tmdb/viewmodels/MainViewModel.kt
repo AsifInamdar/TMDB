@@ -24,9 +24,36 @@ class MainViewModel @Inject constructor(
     private val _popularMovieList = MutableStateFlow(emptyList<MovieListDetail>())
     val popularMovieList : StateFlow<List<MovieListDetail>> = _popularMovieList
 
+    private val _topRatedMovieList = MutableStateFlow(emptyList<MovieListDetail>())
+    val topRatedMovieList : StateFlow<List<MovieListDetail>> = _topRatedMovieList
+
+    private val _upcomingMovieList = MutableStateFlow(emptyList<MovieListDetail>())
+    val upcomingMovieList : StateFlow<List<MovieListDetail>> = _upcomingMovieList
+
+    private val _nowPlayingMovieList = MutableStateFlow(emptyList<MovieListDetail>())
+    val nowPlayingMovieList : StateFlow<List<MovieListDetail>> = _nowPlayingMovieList
+
     fun getPopularMovies() {
         viewModelScope.launch {
             _popularMovieList.value = movieDataRepository.getPopularMovies().movieList
+        }
+    }
+
+    fun getTopRatedList() {
+        viewModelScope.launch {
+            _topRatedMovieList.value = movieDataRepository.getTopRatedList().movieList
+        }
+    }
+
+    fun getUpcomingList() {
+        viewModelScope.launch {
+            _upcomingMovieList.value = movieDataRepository.getUpcomingList().movieList
+        }
+    }
+
+    fun getNowPlayingList() {
+        viewModelScope.launch {
+            _nowPlayingMovieList.value = movieDataRepository.getNowPlayingList().movieList
         }
     }
 

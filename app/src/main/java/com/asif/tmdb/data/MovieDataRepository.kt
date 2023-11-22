@@ -25,4 +25,16 @@ class MovieDataRepository @Inject constructor(private val apiService: MovieAPISe
        return apiService.getPopularList()
     }
 
+    suspend fun getTopRatedList(): MovieListResponse {
+        return apiService.getTopRatedList()
+    }
+
+    suspend fun getUpcomingList(): MovieListResponse {
+        return apiService.getUpcomingList()
+    }
+
+    suspend fun getNowPlayingList(): MovieListResponse {
+        return apiService.getNowPlayingList()
+    }
+
 }

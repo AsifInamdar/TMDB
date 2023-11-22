@@ -132,7 +132,11 @@ fun PopularList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltVi
 }
 
 @Composable
-fun TopRatedList(modifier: Modifier = Modifier) {
+fun TopRatedList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltViewModel()) {
+
+    viewModel.getTopRatedList()
+
+    val moviesList by viewModel.topRatedMovieList.collectAsState()
 
     Column(
         modifier = modifier
@@ -147,16 +151,19 @@ fun TopRatedList(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(start = 5.dp)
         ) {
-            items(7) { movie ->
-                val viewModel: MainViewModel = hiltViewModel()
-                PopularItem(movie =viewModel.getStaticMovieObject())
+            items(moviesList) { movie ->
+                PopularItem(movie = movie)
             }
         }
     }
 }
 
 @Composable
-fun NowPlayingList() {
+fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
+
+    viewModel.getNowPlayingList()
+
+    val moviesList by viewModel.nowPlayingMovieList.collectAsState()
 
     Column(
         modifier = Modifier
@@ -176,8 +183,8 @@ fun NowPlayingList() {
         Spacer(modifier = Modifier.height(15.dp))
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(7) { movie ->
-                NowPlayingItem()
+            items(moviesList) { movie ->
+                NowPlayingItem(movie)
             }
         }
     }
@@ -185,7 +192,12 @@ fun NowPlayingList() {
 
 
 @Composable
-fun UpcomingList() {
+fun UpcomingList(viewModel: MainViewModel = hiltViewModel()) {
+
+    viewModel.getUpcomingList()
+
+    val moviesList by viewModel.upcomingMovieList.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,9 +211,8 @@ fun UpcomingList() {
                 .fillMaxWidth()
                 .padding(start = 5.dp)
         ) {
-            items(7) { movie ->
-                val viewModel: MainViewModel = hiltViewModel()
-                PopularItem(movie =viewModel.getStaticMovieObject())
+            items(moviesList) { movie ->
+                PopularItem(movie = movie)
             }
         }
     }
