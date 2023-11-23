@@ -1,6 +1,7 @@
 package com.asif.tmdb.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,37 +22,15 @@ import com.asif.tmdb.viewmodels.MainViewModel
 const val IMAGE_BASE_URL = "https://www.themoviedb.org/t/p/w220_and_h330_face"
 
 @Composable
-fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail) {
+fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunction : ()-> Unit) {
     Column(
         modifier = modifier
             .width(128.dp)
             .padding(horizontal = 5.dp)
+            .clickable {
+                clickFunction()
+            }
     ) {
-
-       /* if (LocalInspectionMode.current) {
-            Image(
-                painter = painterResource(id = R.drawable.loki),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(168.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(IMAGE_BASE_URL + movie.posterPath)
-                    .build(),
-                contentDescription = null,
-                error = ColorPainter(Color.Red),
-                modifier = Modifier
-                    .height(168.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-        }*/
 
         ImageCompose(imagePath = IMAGE_BASE_URL + movie.posterPath, height = 168)
 
@@ -74,5 +53,5 @@ fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail) {
 @Composable
 fun PopularItemPreview() {
     val viewModel: MainViewModel = hiltViewModel()
-    PopularItem(Modifier.background(color = Color.Black), viewModel.getStaticMovieObject())
+    PopularItem(Modifier.background(color = Color.Black), viewModel.getStaticMovieObject(), {})
 }

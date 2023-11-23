@@ -7,14 +7,17 @@ import com.asif.tmdb.api.MovieAPIService
 private const val STARTING_PAGE_INDEX = 1
 
 class MovieListPagingSource
-    (private val service: MovieAPIService) :
+    (
+    private val service: MovieAPIService,
+    private val movieType: String
+) :
     PagingSource<Int, MovieListDetail>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieListDetail> {
 
         val page = params.key ?: STARTING_PAGE_INDEX
         return try {
-            val response = service.getAllMoviesPaginated(page, "en-US")
+            val response = service.getAllMoviesPaginated(movieType, page, "en-US")
             val movies = response.movieList
             LoadResult.Page(
                 data = movies,

@@ -1,5 +1,6 @@
 package com.asif.tmdb.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,12 +34,13 @@ import com.asif.tmdb.viewmodels.MainViewModel
 const val BACKDROP_BASE_URL = "https://www.themoviedb.org/t/p/w780"
 
 @Composable
-fun NowPlayingItem(movie: MovieListDetail) {
+fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
 
     Box(
         modifier = Modifier
             .width(320.dp)
             .padding(end = 10.dp)
+            .clickable { clickFunction() }
     ) {
 
         AsyncImage(
@@ -116,5 +118,5 @@ fun NowPlayingItem(movie: MovieListDetail) {
 @Composable
 fun NowPlayingItemPreview() {
     val viewModel: MainViewModel = hiltViewModel()
-    NowPlayingItem(viewModel.getStaticMovieObject())
+    NowPlayingItem(viewModel.getStaticMovieObject(),{})
 }

@@ -1,6 +1,5 @@
 package com.asif.tmdb.compose
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +30,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,25 +44,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asif.tmdb.R
-import com.asif.tmdb.ui.TMDBTheme
+import com.asif.tmdb.utils.showToast
 import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
-fun HomeMain() {
-    TMDBTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.Black)
-        ) {
-            AppBar()
-        }
+fun HomeMain(
+    onMovieClick: (String) -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black)
+    ) {
+        AppBar(onMovieClick)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar() {
+fun AppBar(onMovieClick: (String) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -92,24 +94,34 @@ fun AppBar() {
                 .verticalScroll(rememberScrollState())
         ) {
 
-            PopularList()
+            PopularList(onMovieClick = onMovieClick)
 
-            TopRatedList()
+            TopRatedList(onMovieClick = onMovieClick)
 
             NowPlayingList()
 
-            UpcomingList()
+            UpcomingList(onMovieClick = onMovieClick)
         }
     }
 
 }
 
 @Composable
-fun PopularList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltViewModel()) {
+fun PopularList(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
+    onMovieClick: (String) -> Unit
+) {
 
-    viewModel.getPopularMovies()
+    var isApiCalled by rememberSaveable { mutableStateOf(false) }
+
+    if (!isApiCalled) {
+        viewModel.getPopularMovies()
+        isApiCalled = true
+    }
 
     val moviesList by viewModel.popularMovieList.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -117,7 +129,7 @@ fun PopularList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltVi
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Popular")
+        SectionHeader(title = "Popular", onMovieClick = onMovieClick)
 
         LazyRow(
             modifier = Modifier
@@ -125,18 +137,30 @@ fun PopularList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltVi
                 .padding(start = 5.dp)
         ) {
             items(moviesList) { movie ->
-                PopularItem(movie = movie)
+                PopularItem(movie = movie, clickFunction = {
+                    showToast(context, movie.originalTitle)
+                })
             }
         }
     }
 }
 
 @Composable
-fun TopRatedList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltViewModel()) {
+fun TopRatedList(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
+    onMovieClick: (String) -> Unit
+) {
+    var isApiCalled by rememberSaveable { mutableStateOf(false) }
 
-    viewModel.getTopRatedList()
+    if (!isApiCalled) {
+        viewModel.getTopRatedList()
+        isApiCalled = true
+    }
 
     val moviesList by viewModel.topRatedMovieList.collectAsState()
+
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -144,7 +168,7 @@ fun TopRatedList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltV
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Top Rated")
+        SectionHeader(title = "Top Rated", onMovieClick = onMovieClick)
 
         LazyRow(
             modifier = Modifier
@@ -152,7 +176,9 @@ fun TopRatedList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltV
                 .padding(start = 5.dp)
         ) {
             items(moviesList) { movie ->
-                PopularItem(movie = movie)
+                PopularItem(movie = movie, clickFunction = {
+                    showToast(context, movie.originalTitle)
+                })
             }
         }
     }
@@ -161,9 +187,16 @@ fun TopRatedList(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltV
 @Composable
 fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
 
-    viewModel.getNowPlayingList()
+    var isApiCalled by rememberSaveable { mutableStateOf(false) }
+
+    if (!isApiCalled) {
+        viewModel.getNowPlayingList()
+        isApiCalled = true
+    }
 
     val moviesList by viewModel.nowPlayingMovieList.collectAsState()
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -184,7 +217,9 @@ fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(moviesList) { movie ->
-                NowPlayingItem(movie)
+                NowPlayingItem(movie) {
+                    showToast(context, movie.originalTitle)
+                }
             }
         }
     }
@@ -192,11 +227,20 @@ fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
 
 
 @Composable
-fun UpcomingList(viewModel: MainViewModel = hiltViewModel()) {
+fun UpcomingList(
+    viewModel: MainViewModel = hiltViewModel(),
+    onMovieClick: (String) -> Unit
+) {
 
-    viewModel.getUpcomingList()
+    var isApiCalled by rememberSaveable { mutableStateOf(false) }
+
+    if (!isApiCalled) {
+        viewModel.getUpcomingList()
+        isApiCalled = true
+    }
 
     val moviesList by viewModel.upcomingMovieList.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -204,7 +248,7 @@ fun UpcomingList(viewModel: MainViewModel = hiltViewModel()) {
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Upcoming")
+        SectionHeader(title = "Upcoming", onMovieClick = onMovieClick)
 
         LazyRow(
             modifier = Modifier
@@ -212,15 +256,19 @@ fun UpcomingList(viewModel: MainViewModel = hiltViewModel()) {
                 .padding(start = 5.dp)
         ) {
             items(moviesList) { movie ->
-                PopularItem(movie = movie)
+                PopularItem(movie = movie, clickFunction = {
+                    showToast(context, movie.originalTitle)
+                })
             }
         }
     }
 }
 
 @Composable
-fun SectionHeader(modifier: Modifier = Modifier, title: String) {
-    val context = LocalContext.current
+fun SectionHeader(
+    modifier: Modifier = Modifier, title: String,
+    onMovieClick: (String) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -255,7 +303,7 @@ fun SectionHeader(modifier: Modifier = Modifier, title: String) {
                     containerColor = Color.White
                 ),
                 onClick = {
-                    Toast.makeText(context, "Test", Toast.LENGTH_SHORT).show()
+                    onMovieClick(title)
                 },
                 shape = RoundedCornerShape(5.dp),
                 contentPadding = PaddingValues(
@@ -273,5 +321,5 @@ fun SectionHeader(modifier: Modifier = Modifier, title: String) {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HomeMainPreview() {
-    HomeMain()
+    HomeMain(onMovieClick = {})
 }

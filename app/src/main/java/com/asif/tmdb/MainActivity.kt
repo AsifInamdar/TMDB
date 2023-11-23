@@ -3,7 +3,7 @@ package com.asif.tmdb
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.asif.tmdb.compose.HomeMain
+import com.asif.tmdb.compose.TMDBApp
 import com.asif.tmdb.ui.TMDBTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TMDBTheme {
-                HomeMain()
+                TMDBApp()
             }
         }
     }

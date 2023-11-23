@@ -21,21 +21,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
-fun MoviesListGrid() {
+fun MoviesListGrid(
+    title: String,
+    mainViewModel: MainViewModel = hiltViewModel(),
+    navController: NavHostController = rememberNavController()
+) {
+
+    mainViewModel.setMovieListType(title)
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
-        MovieListAppBar("Popular Movies")
+        MovieListAppBar(title = title, navController = navController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListAppBar(title: String) {
+fun MovieListAppBar(title: String, navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -47,10 +59,14 @@ fun MovieListAppBar(title: String) {
                     titleContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.ArrowBack,
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            Icons.Default.ArrowBack,
                             contentDescription = null,
-                            tint = Color.White)
+                            tint = Color.White
+                        )
                     }
                 }
             )
@@ -69,13 +85,18 @@ fun MovieListAppBar(title: String) {
 }
 
 @Composable
-fun GridList() {
+fun GridList(mainViewModel: MainViewModel = hiltViewModel()) {
+
+    val movies = mainViewModel.movieListPaginated.collectAsLazyPagingItems()
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.padding(10.dp)
+        columns = GridCells.Adaptive(148.dp),
+        modifier = Modifier.padding(horizontal = 10.dp)
     ) {
-        items(7) { movie ->
-            GridMovieItem()
+        items(movies.itemCount) { index ->
+            movies[index]?.let { movie ->
+                GridMovieItem(movie)
+            }
         }
     }
 }
@@ -83,5 +104,5 @@ fun GridList() {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun MoviesListGridPreview() {
-    MoviesListGrid()
+    MoviesListGrid(title = "Popular Movies")
 }
