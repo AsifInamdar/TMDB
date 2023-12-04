@@ -11,17 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.asif.tmdb.data.movieList.MovieListDetail
 import com.asif.tmdb.utils.POSTER_IMAGE_BASE_URL
-import com.asif.tmdb.viewmodels.MainViewModel
+import com.asif.tmdb.utils.getStaticMovieObject
 
 @Composable
-fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunction: () -> Unit) {
+fun PopularItem(modifier: Modifier = Modifier,
+                movie: MovieListDetail,
+                clickFunction: () -> Unit) {
     Column(
         modifier = modifier
             .width(128.dp)
@@ -29,6 +31,7 @@ fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunc
             .clickable {
                 clickFunction()
             }
+            .testTag("PopularItem")
     ) {
 
         ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 168)
@@ -51,6 +54,5 @@ fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunc
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PopularItemPreview() {
-    val viewModel: MainViewModel = hiltViewModel()
-    PopularItem(Modifier.background(color = Color.Black), viewModel.getStaticMovieObject(), {})
+    PopularItem(Modifier.background(color = Color.Black), getStaticMovieObject(), {})
 }

@@ -52,7 +52,8 @@ import com.asif.tmdb.viewmodels.MovieDetailsViewModel
 
 @Composable
 fun MovieDetailsScreen(
-    title: String, id: Int,
+    title: String,
+    id: Int,
     navController: NavController,
     movieDetailsViewModel: MovieDetailsViewModel = hiltViewModel()
 ) {

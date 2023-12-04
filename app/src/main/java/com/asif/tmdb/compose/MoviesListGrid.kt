@@ -78,14 +78,14 @@ fun MovieListAppBar(title: String, navController: NavHostController) {
                 .fillMaxSize()
                 .background(color = Color.Black)
         ) {
-            GridList()
+            GridList(navController = navController)
         }
     }
 
 }
 
 @Composable
-fun GridList(mainViewModel: MainViewModel = hiltViewModel()) {
+fun GridList(mainViewModel: MainViewModel = hiltViewModel(), navController: NavHostController) {
 
     val movies = mainViewModel.movieListPaginated.collectAsLazyPagingItems()
 
@@ -95,7 +95,9 @@ fun GridList(mainViewModel: MainViewModel = hiltViewModel()) {
     ) {
         items(movies.itemCount) { index ->
             movies[index]?.let { movie ->
-                GridMovieItem(movie)
+                GridMovieItem(movie) {
+                    navController.navigate(Screens.MovieDetailsScreen.createRoute(movie.title, movie.id))
+                }
             }
         }
     }

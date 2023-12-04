@@ -18,20 +18,20 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.asif.tmdb.R
 import com.asif.tmdb.data.movieList.MovieListDetail
 import com.asif.tmdb.utils.BACKDROP_BASE_URL
 import com.asif.tmdb.utils.POSTER_IMAGE_BASE_URL
-import com.asif.tmdb.viewmodels.MainViewModel
+import com.asif.tmdb.utils.getStaticMovieObject
 
 
 @Composable
@@ -42,6 +42,7 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction: () -> Unit) {
             .width(320.dp)
             .padding(end = 10.dp)
             .clickable { clickFunction() }
+            .testTag("NowPlayingItem")
     ) {
 
         AsyncImage(
@@ -122,6 +123,5 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction: () -> Unit) {
 @Preview
 @Composable
 fun NowPlayingItemPreview() {
-    val viewModel: MainViewModel = hiltViewModel()
-    NowPlayingItem(viewModel.getStaticMovieObject(), {})
+    NowPlayingItem(getStaticMovieObject(), {})
 }
