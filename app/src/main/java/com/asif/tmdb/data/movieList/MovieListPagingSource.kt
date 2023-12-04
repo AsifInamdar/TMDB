@@ -1,4 +1,4 @@
-package com.asif.tmdb.data
+package com.asif.tmdb.data.movieList
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

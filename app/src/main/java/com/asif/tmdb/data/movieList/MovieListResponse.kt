@@ -1,5 +1,4 @@
-package com.asif.tmdb.data
-
+package com.asif.tmdb.data.movieList
 
 import com.google.gson.annotations.SerializedName
 

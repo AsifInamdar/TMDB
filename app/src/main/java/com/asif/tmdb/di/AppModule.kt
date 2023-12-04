@@ -1,7 +1,7 @@
 package com.asif.tmdb.di
 
 import com.asif.tmdb.api.MovieAPIService
-import com.asif.tmdb.data.MovieDataRepository
+import com.asif.tmdb.data.movieList.MovieDataRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

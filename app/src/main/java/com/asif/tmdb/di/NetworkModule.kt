@@ -1,6 +1,7 @@
 package com.asif.tmdb.di
 
 import com.asif.tmdb.api.MovieAPIService
+import com.asif.tmdb.utils.API_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +36,7 @@ object NetworkModule {
 
         return Retrofit.Builder()
             .client(client)
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl(API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -20,10 +20,13 @@ fun MyNavigationHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = "home") {
         composable(route = Screens.HomeScreen.route) {
-            HomeMain(onMovieClick = { title ->
-                logD("navigate", "title $title")
-                navController.navigate(Screens.MoviesListGrid.createRoute(title))
-            })
+            HomeMain(
+                onHeaderButtonClick = { title ->
+                    logD("navigate", "title $title")
+                    navController.navigate(Screens.MoviesListGrid.createRoute(title))
+                },
+                navController = navController
+            )
         }
 
         composable(route = Screens.MoviesListGrid.route + "/{type}",
@@ -37,5 +40,22 @@ fun MyNavigationHost(navController: NavHostController) {
                 navController = navController
             )
         }
+
+        composable(route = Screens.MovieDetailsScreen.route + "/{title}/{id}",
+            arguments = listOf(
+                navArgument("title") {
+                    type = NavType.StringType
+                },
+                navArgument("id") {
+                    type = NavType.IntType
+                }
+            )) { entry ->
+            MovieDetailsScreen(
+                title = entry.arguments?.getString("title").toString(),
+                id = entry.arguments?.getInt("id")!!,
+                navController = navController
+            )
+        }
+
     }
 }

@@ -28,13 +28,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.asif.tmdb.R
-import com.asif.tmdb.data.MovieListDetail
+import com.asif.tmdb.data.movieList.MovieListDetail
+import com.asif.tmdb.utils.BACKDROP_BASE_URL
+import com.asif.tmdb.utils.POSTER_IMAGE_BASE_URL
 import com.asif.tmdb.viewmodels.MainViewModel
 
-const val BACKDROP_BASE_URL = "https://www.themoviedb.org/t/p/w780"
 
 @Composable
-fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
+fun NowPlayingItem(movie: MovieListDetail, clickFunction: () -> Unit) {
 
     Box(
         modifier = Modifier
@@ -65,7 +66,7 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(IMAGE_BASE_URL + movie.posterPath)
+                    .data(POSTER_IMAGE_BASE_URL + movie.posterPath)
                     .build(),
                 placeholder = painterResource(id = R.drawable.loki3),
                 error = painterResource(id = R.drawable.loki2),
@@ -74,7 +75,7 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
                     .height(90.dp)
                     .width(72.dp)
                     .shadow(
-                        elevation = 15.dp,
+                        elevation = 20.dp,
                         spotColor = Color.Black,
                         ambientColor = Color.Black
                     )
@@ -87,7 +88,11 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
                     .fillMaxWidth()
                     .align(Alignment.Bottom)
                     .padding(horizontal = 10.dp)
-                    .shadow(elevation = 50.dp, spotColor = Color.Black)
+                    .shadow(
+                        elevation = 50.dp,
+                        spotColor = Color.Black,
+                        ambientColor = Color.Black
+                    )
             ) {
 
                 Text(
@@ -118,5 +123,5 @@ fun NowPlayingItem(movie: MovieListDetail, clickFunction : () ->Unit) {
 @Composable
 fun NowPlayingItemPreview() {
     val viewModel: MainViewModel = hiltViewModel()
-    NowPlayingItem(viewModel.getStaticMovieObject(),{})
+    NowPlayingItem(viewModel.getStaticMovieObject(), {})
 }

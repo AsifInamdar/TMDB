@@ -16,13 +16,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asif.tmdb.data.MovieListDetail
+import com.asif.tmdb.data.movieList.MovieListDetail
+import com.asif.tmdb.utils.POSTER_IMAGE_BASE_URL
 import com.asif.tmdb.viewmodels.MainViewModel
 
-const val IMAGE_BASE_URL = "https://www.themoviedb.org/t/p/w220_and_h330_face"
-
 @Composable
-fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunction : ()-> Unit) {
+fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunction: () -> Unit) {
     Column(
         modifier = modifier
             .width(128.dp)
@@ -32,7 +31,7 @@ fun PopularItem(modifier: Modifier = Modifier, movie: MovieListDetail, clickFunc
             }
     ) {
 
-        ImageCompose(imagePath = IMAGE_BASE_URL + movie.posterPath, height = 168)
+        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 168)
 
         Text(
             text = movie.originalTitle,

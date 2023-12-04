@@ -1,23 +1,21 @@
 package com.asif.tmdb.compose
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-
 sealed class Screens(
-    val route: String,
-    val navArguments: List<NamedNavArgument> = emptyList()
+    val route: String
 ) {
 
     data object HomeScreen : Screens("home")
 
     data object MoviesListGrid : Screens(
-        route = "movie_list",
-        navArguments = listOf(navArgument("type") {
-            type = NavType.StringType
-        })
-    ){
+        route = "movie_list"
+    ) {
         fun createRoute(movieType: String) = "movie_list/${movieType}"
+    }
+
+    data object MovieDetailsScreen : Screens(
+        route = "movie_details"
+    ){
+        fun createRoute(title: String, id: Int) = "movie_details/${title}/${id}"
     }
 
 }

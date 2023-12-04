@@ -43,26 +43,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.asif.tmdb.R
-import com.asif.tmdb.utils.showToast
 import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
 fun HomeMain(
-    onMovieClick: (String) -> Unit
+    onHeaderButtonClick: (String) -> Unit,
+    navController: NavController
 ) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
-        AppBar(onMovieClick)
+        AppBar(onHeaderButtonClick, navController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(onMovieClick: (String) -> Unit) {
+fun AppBar(onHeaderButtonClick: (String) -> Unit, navController: NavController) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -94,13 +96,13 @@ fun AppBar(onMovieClick: (String) -> Unit) {
                 .verticalScroll(rememberScrollState())
         ) {
 
-            PopularList(onMovieClick = onMovieClick)
+            PopularList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
 
-            TopRatedList(onMovieClick = onMovieClick)
+            TopRatedList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
 
-            NowPlayingList()
+            NowPlayingList(navController = navController)
 
-            UpcomingList(onMovieClick = onMovieClick)
+            UpcomingList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
         }
     }
 
@@ -110,7 +112,8 @@ fun AppBar(onMovieClick: (String) -> Unit) {
 fun PopularList(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
-    onMovieClick: (String) -> Unit
+    onHeaderButtonClick: (String) -> Unit,
+    navController: NavController
 ) {
 
     var isApiCalled by rememberSaveable { mutableStateOf(false) }
@@ -121,7 +124,6 @@ fun PopularList(
     }
 
     val moviesList by viewModel.popularMovieList.collectAsState()
-    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -129,7 +131,7 @@ fun PopularList(
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Popular", onMovieClick = onMovieClick)
+        SectionHeader(title = "Popular", onHeaderButtonClick = onHeaderButtonClick)
 
         LazyRow(
             modifier = Modifier
@@ -138,18 +140,31 @@ fun PopularList(
         ) {
             items(moviesList) { movie ->
                 PopularItem(movie = movie, clickFunction = {
-                    showToast(context, movie.originalTitle)
+                    showDetailsScreen(
+                        navController, movie.originalTitle,
+                        movie.id
+                    )
                 })
             }
         }
     }
 }
 
+fun showDetailsScreen(navController: NavController, originalTitle: String, id: Int) {
+    navController.navigate(
+        Screens.MovieDetailsScreen.createRoute(
+            originalTitle,
+            id
+        )
+    )
+}
+
 @Composable
 fun TopRatedList(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
-    onMovieClick: (String) -> Unit
+    onHeaderButtonClick: (String) -> Unit,
+    navController: NavController
 ) {
     var isApiCalled by rememberSaveable { mutableStateOf(false) }
 
@@ -160,15 +175,13 @@ fun TopRatedList(
 
     val moviesList by viewModel.topRatedMovieList.collectAsState()
 
-    val context = LocalContext.current
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Top Rated", onMovieClick = onMovieClick)
+        SectionHeader(title = "Top Rated", onHeaderButtonClick = onHeaderButtonClick)
 
         LazyRow(
             modifier = Modifier
@@ -177,7 +190,10 @@ fun TopRatedList(
         ) {
             items(moviesList) { movie ->
                 PopularItem(movie = movie, clickFunction = {
-                    showToast(context, movie.originalTitle)
+                    showDetailsScreen(
+                        navController, movie.originalTitle,
+                        movie.id
+                    )
                 })
             }
         }
@@ -185,7 +201,10 @@ fun TopRatedList(
 }
 
 @Composable
-fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
+fun NowPlayingList(
+    viewModel: MainViewModel = hiltViewModel(),
+    navController: NavController
+) {
 
     var isApiCalled by rememberSaveable { mutableStateOf(false) }
 
@@ -218,7 +237,10 @@ fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(moviesList) { movie ->
                 NowPlayingItem(movie) {
-                    showToast(context, movie.originalTitle)
+                    showDetailsScreen(
+                        navController, movie.originalTitle,
+                        movie.id
+                    )
                 }
             }
         }
@@ -229,7 +251,8 @@ fun NowPlayingList(viewModel: MainViewModel = hiltViewModel()) {
 @Composable
 fun UpcomingList(
     viewModel: MainViewModel = hiltViewModel(),
-    onMovieClick: (String) -> Unit
+    onHeaderButtonClick: (String) -> Unit,
+    navController: NavController
 ) {
 
     var isApiCalled by rememberSaveable { mutableStateOf(false) }
@@ -248,7 +271,7 @@ fun UpcomingList(
             .padding(start = 8.dp)
     ) {
 
-        SectionHeader(title = "Upcoming", onMovieClick = onMovieClick)
+        SectionHeader(title = "Upcoming", onHeaderButtonClick = onHeaderButtonClick)
 
         LazyRow(
             modifier = Modifier
@@ -257,7 +280,10 @@ fun UpcomingList(
         ) {
             items(moviesList) { movie ->
                 PopularItem(movie = movie, clickFunction = {
-                    showToast(context, movie.originalTitle)
+                    showDetailsScreen(
+                        navController, movie.originalTitle,
+                        movie.id
+                    )
                 })
             }
         }
@@ -267,7 +293,7 @@ fun UpcomingList(
 @Composable
 fun SectionHeader(
     modifier: Modifier = Modifier, title: String,
-    onMovieClick: (String) -> Unit
+    onHeaderButtonClick: (String) -> Unit
 ) {
 
     Column(
@@ -303,7 +329,7 @@ fun SectionHeader(
                     containerColor = Color.White
                 ),
                 onClick = {
-                    onMovieClick(title)
+                    onHeaderButtonClick(title)
                 },
                 shape = RoundedCornerShape(5.dp),
                 contentPadding = PaddingValues(
@@ -321,5 +347,5 @@ fun SectionHeader(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HomeMainPreview() {
-    HomeMain(onMovieClick = {})
+    HomeMain(onHeaderButtonClick = {}, rememberNavController())
 }

@@ -1,11 +1,15 @@
-package com.asif.tmdb.data
+package com.asif.tmdb.data.movieList
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.asif.tmdb.api.MovieAPIService
+import com.asif.tmdb.data.movieDetails.MovieDetailsResponse
 import com.asif.tmdb.utils.logD
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,6 +59,13 @@ class MovieDataRepository @Inject constructor(private val apiService: MovieAPISe
                 "upcoming"
             }
         }
+    }
+
+
+    fun getMovieDetails(movieId: Int): Flow<MovieDetailsResponse> {
+        return flow {
+            emit(apiService.getMovieDetails(movieId))
+        }.flowOn(Dispatchers.IO)
     }
 
 }

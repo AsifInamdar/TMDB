@@ -13,7 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asif.tmdb.data.MovieListDetail
+import com.asif.tmdb.data.movieList.MovieListDetail
+import com.asif.tmdb.utils.POSTER_IMAGE_BASE_URL
 import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
@@ -24,7 +25,7 @@ fun GridMovieItem(movie: MovieListDetail) {
             .padding(10.dp)
     ) {
 
-        ImageCompose(imagePath = IMAGE_BASE_URL + movie.posterPath, height = 200)
+        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 200)
 
         Text(
             text = movie.originalTitle,
