@@ -28,7 +28,7 @@ fun TrailerView() {
         ImageCompose(
             modifier = Modifier
                 .padding(2.dp),
-            height = 150,
+            height = 150.dp,
             imagePath = "", cornerRadius = 5
         )
 

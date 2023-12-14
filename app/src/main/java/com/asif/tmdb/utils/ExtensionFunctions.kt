@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.asif.tmdb.data.movieDetails.MovieDetailsResponse
 import com.asif.tmdb.data.movieList.MovieListDetail
 import com.asif.tmdb.data.movieList.MovieListResponse
+import java.util.Locale
 
 fun logE(tag: String, message: String) {
     Log.e(tag, message)
@@ -75,4 +76,11 @@ fun getStaticMovieDetailsObject(): MovieDetailsResponse {
         status = "Released",
         tagline = "Test"
     )
+}
+
+fun formatRevenue(revenue: Int?): String? {
+    if (revenue == null) return null
+
+    val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("en", "US"))
+    return currencyFormat.format(revenue.toString().substringAfter("$").toDouble())
 }

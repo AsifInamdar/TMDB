@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -27,7 +28,7 @@ import com.asif.tmdb.R
 fun ImageCompose(
     modifier: Modifier = Modifier,
     imagePath: String,
-    height: Int,
+    height: Dp,
     contentScale: ContentScale = ContentScale.Crop,
     cornerRadius: Int = 10,
     alphaVal: Float = 1f
@@ -40,7 +41,7 @@ fun ImageCompose(
         placeholder = debugPlaceholder(R.drawable.loki),
         error = ColorPainter(Color.White),
         modifier = modifier
-            .height(height.dp)
+            .height(height)
             .fillMaxWidth()
             .alpha(alphaVal)
             .clip(RoundedCornerShape(cornerRadius.dp)),
@@ -108,6 +109,6 @@ fun ImageComposePreview() {
     ImageCompose(
         modifier = Modifier,
         imagePath = "https://www.themoviedb.org/t/p/w220_and_h330_face/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
-        height = 168
+        height = 168.dp
     )
 }

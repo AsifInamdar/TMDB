@@ -88,7 +88,7 @@ fun BackDropImage(movieDetails: State<MovieDetailsWrapped?>) {
     movieDetails.value?.backdropPath?.let {
         ImageCompose(
             imagePath = BACKDROP_BASE_URL + it,
-            height = 300,
+            height = 300.dp,
             cornerRadius = 0,
             alphaVal = 0.2f
         )

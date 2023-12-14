@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.asif.tmdb.utils.MovieType
 import com.asif.tmdb.utils.logD
 
 @Composable
@@ -35,8 +36,14 @@ fun MyNavigationHost(navController: NavHostController) {
                     type = NavType.StringType
                 }
             )) { entry ->
+
+            val movieTypeString = entry.arguments?.getString("type").toString()
+            val movieType = MovieType.entries.find { it.displayName.equals(movieTypeString, ignoreCase = true) }
+                ?: MovieType.POPULAR // Default to POPULAR if no match is found
+
+
             MoviesListGrid(
-                title = entry.arguments?.getString("type").toString(),
+                title = movieType.displayName,
                 navController = navController
             )
         }

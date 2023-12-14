@@ -2,19 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="NowPlayingItemTest">
-        <State />
-      </entry>
-      <entry key="PopularItemTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.asif.tmdb'">
-        <State />
-      </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="testRetrofitInstance()">
         <State />
       </entry>
     </value>

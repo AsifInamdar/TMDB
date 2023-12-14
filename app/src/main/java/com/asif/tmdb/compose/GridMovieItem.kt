@@ -28,7 +28,7 @@ fun GridMovieItem(movie: MovieListDetail, clickFunction: () -> Unit) {
             .testTag("GridMovieItem")
     ) {
 
-        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 200)
+        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 200.dp)
 
         Text(
             text = movie.originalTitle,

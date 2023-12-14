@@ -1,11 +1,11 @@
 [versions]
-agp = "8.3.0-alpha06"
+agp = "8.2.0"
 kotlin = "1.9.0"
 core-ktx = "1.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
-kotlinxCoroutinesTest = "1.5.2"
+kotlinxCoroutinesTest = "1.7.3"
 lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.8.1"
 compose-bom = "2023.10.01"
@@ -16,6 +16,11 @@ hiltNavigationCompose = "1.1.0"
 ksp = "1.9.10-1.0.13"
 pagingCompose = "3.2.1"
 coil = "2.5.0"
+turbine = "1.0.0"
+mockitoAndroid = "2.12.0"
+mockitoCore = "5.8.0"
+mockitoKotlin = "5.2.1"
+
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -36,6 +41,10 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 retrofit-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "retrofit-logging" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }

@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.asif.tmdb.api.MovieAPIService
 import com.asif.tmdb.data.movieDetails.MovieDetailsResponse
+import com.asif.tmdb.utils.MovieType
 import com.asif.tmdb.utils.logD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,8 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class MovieDataRepository @Inject constructor(private val apiService: MovieAPIService) {
 
-    fun getAllMoviesPaginated(movieType: String): Flow<PagingData<MovieListDetail>> {
-        val title = getMovieTypeBasedOnTitle(movieType)
+    fun getAllMoviesPaginated(movieType: MovieType): Flow<PagingData<MovieListDetail>> {
+        val title = getMovieTypeBasedOnTitle(movieType.displayName).apiValue
         logD("Repository", "title $title")
         return Pager(
             config = PagingConfig(
@@ -29,40 +30,48 @@ class MovieDataRepository @Inject constructor(private val apiService: MovieAPISe
     }
 
     suspend fun getPopularMovies(): MovieListResponse {
-        return apiService.getPopularList()
+        return try {
+            apiService.getPopularList()
+        } catch (e: Exception) {
+            MovieListResponse(page = 0, movieList = emptyList(), totalPages = 0, totalResults = 0)
+        }
     }
 
     suspend fun getTopRatedList(): MovieListResponse {
-        return apiService.getTopRatedList()
+        return try {
+            apiService.getTopRatedList()
+        } catch (e: Exception) {
+            MovieListResponse(page = 0, movieList = emptyList(), totalPages = 0, totalResults = 0)
+        }
     }
 
     suspend fun getUpcomingList(): MovieListResponse {
-        return apiService.getUpcomingList()
+        return try {
+            apiService.getUpcomingList()
+        } catch (e: Exception) {
+            MovieListResponse(page = 0, movieList = emptyList(), totalPages = 0, totalResults = 0)
+        }
     }
 
     suspend fun getNowPlayingList(): MovieListResponse {
-        return apiService.getNowPlayingList()
+        return try {
+            apiService.getNowPlayingList()
+        } catch (e: Exception) {
+            MovieListResponse(page = 0, movieList = emptyList(), totalPages = 0, totalResults = 0)
+        }
     }
 
-    private fun getMovieTypeBasedOnTitle(title: String): String {
-        logD("getMovieTitle", "title ${title.lowercase()}")
-        return when (title.lowercase()) {
-            "popular" -> {
-                "popular"
-            }
-
-            "top rated" -> {
-                "top_rated"
-            }
-
-            else -> {
-                "upcoming"
-            }
+    fun getMovieTypeBasedOnTitle(title: String): MovieType {
+        return when (title) {
+            MovieType.POPULAR.displayName -> MovieType.POPULAR
+            MovieType.TOP_RATED.displayName -> MovieType.TOP_RATED
+            MovieType.UPCOMING.displayName -> MovieType.UPCOMING
+            else -> MovieType.POPULAR
         }
     }
 
 
-    fun getMovieDetails(movieId: Int): Flow<MovieDetailsResponse> {
+    suspend fun getMovieDetails(movieId: Int): Flow<MovieDetailsResponse> {
         return flow {
             emit(apiService.getMovieDetails(movieId))
         }.flowOn(Dispatchers.IO)

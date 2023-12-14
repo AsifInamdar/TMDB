@@ -34,7 +34,7 @@ fun PopularItem(modifier: Modifier = Modifier,
             .testTag("PopularItem")
     ) {
 
-        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 168)
+        ImageCompose(imagePath = POSTER_IMAGE_BASE_URL + movie.posterPath, height = 168.dp)
 
         Text(
             text = movie.originalTitle,

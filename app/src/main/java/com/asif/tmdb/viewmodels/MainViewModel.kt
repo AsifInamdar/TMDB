@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.asif.tmdb.data.movieList.MovieDataRepository
 import com.asif.tmdb.data.movieList.MovieListDetail
+import com.asif.tmdb.utils.MovieType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,11 +21,11 @@ class MainViewModel @Inject constructor(
     private val movieDataRepository: MovieDataRepository
 ) : ViewModel() {
 
-    private val movieQueryParams = MutableStateFlow("popular")
+    private val movieQueryParams = MutableStateFlow(MovieType.POPULAR)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val movieListPaginated = movieQueryParams.flatMapLatest {
-        movieDataRepository.getAllMoviesPaginated(movieQueryParams.value)
+    val movieListPaginated = movieQueryParams.flatMapLatest { movieType ->
+        movieDataRepository.getAllMoviesPaginated(movieType)
     }.cachedIn(viewModelScope)
 
     private val _popularMovieList = MutableStateFlow(emptyList<MovieListDetail>())
@@ -38,30 +40,30 @@ class MainViewModel @Inject constructor(
     private val _nowPlayingMovieList = MutableStateFlow(emptyList<MovieListDetail>())
     val nowPlayingMovieList: StateFlow<List<MovieListDetail>> = _nowPlayingMovieList
 
-    fun setMovieListType(movieType: String) {
+    fun setMovieListType(movieType: MovieType) {
         movieQueryParams.value = movieType
     }
 
     fun getPopularMovies() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _popularMovieList.value = movieDataRepository.getPopularMovies().movieList
         }
     }
 
     fun getTopRatedList() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _topRatedMovieList.value = movieDataRepository.getTopRatedList().movieList
         }
     }
 
     fun getUpcomingList() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _upcomingMovieList.value = movieDataRepository.getUpcomingList().movieList
         }
     }
 
     fun getNowPlayingList() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _nowPlayingMovieList.value = movieDataRepository.getNowPlayingList().movieList
         }
     }

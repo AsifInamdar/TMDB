@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.asif.tmdb.utils.MovieType
 import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
@@ -34,7 +35,10 @@ fun MoviesListGrid(
     navController: NavHostController = rememberNavController()
 ) {
 
-    mainViewModel.setMovieListType(title)
+    val movieType = MovieType.entries.find { it.displayName.equals(title, ignoreCase = true) }
+        ?: MovieType.POPULAR // Default to POPULAR if no match is found
+
+    mainViewModel.setMovieListType(movieType)
 
     Surface(
         modifier = Modifier

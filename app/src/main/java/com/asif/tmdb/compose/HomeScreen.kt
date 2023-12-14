@@ -28,15 +28,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.asif.tmdb.R
+import com.asif.tmdb.utils.logD
 import com.asif.tmdb.viewmodels.MainViewModel
 
 @Composable
@@ -58,13 +56,19 @@ fun HomeMain(
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
-        AppBar(onHeaderButtonClick, navController)
+        val viewModel: MainViewModel = hiltViewModel()
+
+        AppBar(onHeaderButtonClick, navController, viewModel)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(onHeaderButtonClick: (String) -> Unit, navController: NavController) {
+fun AppBar(
+    onHeaderButtonClick: (String) -> Unit,
+    navController: NavController,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -96,13 +100,26 @@ fun AppBar(onHeaderButtonClick: (String) -> Unit, navController: NavController) 
                 .verticalScroll(rememberScrollState())
         ) {
 
-            PopularList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
+            logD("HomeScreen", "AppBar recomposed")
+            PopularList(
+                onHeaderButtonClick = onHeaderButtonClick,
+                navController = navController,
+                viewModel = viewModel
+            )
 
-            TopRatedList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
+            TopRatedList(
+                onHeaderButtonClick = onHeaderButtonClick,
+                navController = navController,
+                viewModel = viewModel
+            )
 
-            NowPlayingList(navController = navController)
+            NowPlayingList(navController = navController, viewModel = viewModel)
 
-            UpcomingList(onHeaderButtonClick = onHeaderButtonClick, navController = navController)
+            UpcomingList(
+                onHeaderButtonClick = onHeaderButtonClick,
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     }
 
@@ -116,14 +133,12 @@ fun PopularList(
     navController: NavController
 ) {
 
-    var isApiCalled by rememberSaveable { mutableStateOf(false) }
-
-    if (!isApiCalled) {
-        viewModel.getPopularMovies()
-        isApiCalled = true
-    }
-
     val moviesList by viewModel.popularMovieList.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        if (moviesList.isEmpty())
+            viewModel.getPopularMovies()
+    }
 
     Column(
         modifier = modifier
@@ -166,14 +181,13 @@ fun TopRatedList(
     onHeaderButtonClick: (String) -> Unit,
     navController: NavController
 ) {
-    var isApiCalled by rememberSaveable { mutableStateOf(false) }
-
-    if (!isApiCalled) {
-        viewModel.getTopRatedList()
-        isApiCalled = true
-    }
 
     val moviesList by viewModel.topRatedMovieList.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        if (moviesList.isEmpty())
+            viewModel.getTopRatedList()
+    }
 
     Column(
         modifier = modifier
@@ -205,17 +219,12 @@ fun NowPlayingList(
     viewModel: MainViewModel = hiltViewModel(),
     navController: NavController
 ) {
-
-    var isApiCalled by rememberSaveable { mutableStateOf(false) }
-
-    if (!isApiCalled) {
-        viewModel.getNowPlayingList()
-        isApiCalled = true
-    }
-
     val moviesList by viewModel.nowPlayingMovieList.collectAsState()
 
-    val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        if (moviesList.isEmpty())
+            viewModel.getNowPlayingList()
+    }
 
     Column(
         modifier = Modifier
@@ -255,15 +264,13 @@ fun UpcomingList(
     navController: NavController
 ) {
 
-    var isApiCalled by rememberSaveable { mutableStateOf(false) }
-
-    if (!isApiCalled) {
-        viewModel.getUpcomingList()
-        isApiCalled = true
-    }
 
     val moviesList by viewModel.upcomingMovieList.collectAsState()
-    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        if (moviesList.isEmpty())
+            viewModel.getUpcomingList()
+    }
 
     Column(
         modifier = Modifier

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asif.tmdb.data.movieDetails.MovieDetailsWrapped
 import com.asif.tmdb.data.movieList.MovieDataRepository
+import com.asif.tmdb.utils.formatRevenue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -43,7 +44,7 @@ class MovieDetailsViewModel @Inject constructor(
                         productionCompanies = movie.productionCompanies,
                         productionCountries = movie.productionCountries,
                         releaseDate = movie.releaseDate,
-                        revenue = formatRevenue(movie.revenue),
+                        revenue = formatRevenue(movie.revenue).toString(),
                         runtime = movie.runtime,
                         spokenLanguages = movie.spokenLanguages,
                         status = movie.status,
@@ -65,10 +66,5 @@ class MovieDetailsViewModel @Inject constructor(
                     _movieDetails.send(details)
                 }
         }
-    }
-
-    private fun formatRevenue(revenue: Int): String {
-        val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("en", "US"))
-        return currencyFormat.format(revenue.toString().substringAfter("$").toDouble())
     }
 }
